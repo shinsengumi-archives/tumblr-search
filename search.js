@@ -36,18 +36,18 @@ function mySearch(keyword, tags){
 				continue;
 			}
 			var regex = new RegExp(keyword, "g");
-			var count = (post_text.match(regex) || []).length;
-			if (count > 0) {
-				if (!(count in matched)) {
-					matched[count] = [];
+			var score = (post_text.match(regex) || []).length;
+			if (score > 0) {
+				if (!(score in matched)) {
+					matched[score] = [];
 				}
-				matched[count].push(post_data.html);
+				matched[score].push(post_data.html);
 			}
 		}
 		
 		var orderedKeys = Object.keys(matched).map(function(i){
 			return parseInt(i, 10);
-		}).sort((a,b) => b - a);
+		}).sort((a,b) => b - a).slice(0,100);
 		
 		orderedKeys.forEach(function(key) {
 			matched[key.toString()].forEach(function(post_html) {

@@ -14,7 +14,8 @@ if not CLEAN_RUN:
 	with open("data.json", "r") as read_file:
 		data = json.load(read_file)
 
-for page_id in range(NPAGES, 12, -1):
+for page_id in range(NPAGES, 0, -1):
+	print("page", page_id);
 	page_url = root_url+"page/"+str(page_id)
 	page = requests.get(page_url)
 	doc = html.fromstring(page.content)
