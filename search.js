@@ -1,11 +1,15 @@
 
+/*
 window.onload = function () {
     var iSearch = document.URL.indexOf("/search/");
     if(iSearch >= 0){
     	var keyword = document.URL.substring(iSearch+8);
     	mySearch(keyword, ["-index"]);
     }
-}
+}*/
+
+console.log("\u00e6\u00b2\u0096\u00e7\u0094\u00b0\u00e6\u009e\u0097\u00e5\u00a4\u00aa\u00e9\u0083\u008e");
+console.log("\u00e6\u00b2\u0096\u00e7\u0094\u00b0\u00e7\u00b7\u008f\u00e5\u008f\u00b8");
 
 function mySearch(keyword, tags){
 	const data_file = 'https://raw.githubusercontent.com/shinsengumi-archives/tumblr-search/master/data.json';

@@ -6,6 +6,8 @@ import json
 CLEAN_RUN = True
 NPAGES = 14
 
+print("沖".encode('utf8'))
+
 root_url = "https://shinsengumi-archives.tumblr.com/"
 data = {}
 data["posts"] = {}
@@ -14,7 +16,7 @@ if not CLEAN_RUN:
 	with open("data.json", "r") as read_file:
 		data = json.load(read_file)
 
-for page_id in range(NPAGES, 0, -1):
+for page_id in range(NPAGES, 12, -1):
 	print("page", page_id);
 	page_url = root_url+"page/"+str(page_id)
 	page = requests.get(page_url)
@@ -24,7 +26,9 @@ for page_id in range(NPAGES, 0, -1):
 	post_htmls = [str(html.tostring(raw, encoding="unicode")) for raw in doc.cssselect('div.post')]
 
 	for post_url, post_html in zip(post_urls, post_htmls):
-
+		#post_url = "https://shinsengumi-archives.tumblr.com/post/188382973356/rintaro-okita-%E6%B2%96%E7%94%B0%E6%9E%97%E5%A4%AA%E9%83%8E-wiki-corpus"
+		#post_url = "https://shinsengumi-archives.tumblr.com/post/188360292966/soji-okita-%E6%B2%96%E7%94%B0%E7%B7%8F%E5%8F%B8-wiki-corpus"
+		
 		id = post_url[post_url.find("/post/")+6 : post_url.rfind("/")]
 		if id in data:
 			continue
@@ -38,6 +42,8 @@ for page_id in range(NPAGES, 0, -1):
 		text = re.sub('<.*?>', ' ', text)
 		text = text.strip().replace('\r', ' ').replace('\n', ' ').replace('\t', ' ').replace(' ', ' ')
 		text = re.sub('[ ]{2,}', ' ', text)
+		
+		print(title)
 
 		post_tags = list(map(
 			lambda tag: tag.text_content(),
