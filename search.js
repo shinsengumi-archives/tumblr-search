@@ -1,19 +1,20 @@
-
-console.log(decodeURIComponent(escape("(\xe6\xb2\x96\xe7\x94\xb0\xe7\xb7\x8f\xe5\x8f\xb8) [wiki-corpus]")));
-console.log(escape("沖"));
-
 window.onload = function () {
     var iSearch = document.URL.indexOf("/search/");
     if(iSearch >= 0){
     	var keyword = document.URL.substring(iSearch+8);
-    	//mySearch(keyword, ["-index"]);
+    	mySearch(keyword, ["-index"]);
     }
 }
 
 function mySearch(keyword, tags){
 	const data_file = 'https://raw.githubusercontent.com/shinsengumi-archives/tumblr-search/master/data.json';
 
-	keyword = keyword.toLowerCase();
+	keyword = decodeURIComponent(keyword.toLowerCase()).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	keyword = keyword.replace(/[\u00A0-\u9999<>\&]/gi, function(i) {
+       return '&#'+i.charCodeAt(0)+';';
+    });
+    console.log(keyword);
+
 	var tags_must_contain = tags.filter(function(tag){
 		return tag.charAt(0) == '+';
 	}).map(function(tag){
