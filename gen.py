@@ -2,6 +2,8 @@ from lxml import html
 import requests
 import re
 import json
+import calendar
+import time
 
 CLEAN_RUN = True
 NPAGES = 14
@@ -33,6 +35,8 @@ for page_id in range(NPAGES, 0, -1):
 		doc = html.fromstring(post.content.decode('utf8'))
 
 		title = doc.cssselect('h3.post-title')[0].text_content()
+		
+		timestamp = int(doc.cssselect('.post-content .date .timestamp')[0].text_content().strip()) #calendar.timegm(time.strptime(date, '%B %d, %Y'))
 
 		text = html.tostring(doc.cssselect('div.post-text')[0]).decode('utf8')
 		text = re.sub('<.*?>', ' ', text)
@@ -51,6 +55,7 @@ for page_id in range(NPAGES, 0, -1):
 		post_data = {
 			'url': post_url,
 			'title': title,
+			'date': timestamp,
 			'text': text,
 			'html': post_html,
 			'tags': post_tags,
