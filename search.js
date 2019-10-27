@@ -1,41 +1,84 @@
-alert("hello");
-
-var keyword = "okita";
-var tags = [];
-
 
 window.onload = function () {
     var iSearch = document.URL.indexOf("/search/");
     if(iSearch >= 0){
     	var keyword = document.URL.substring(iSearch+8);
-    	mySearch(keyword, []);
+    	mySearch(keyword, ["-index"]);
     }
 }
 
 function mySearch(keyword, tags){
 	const data_file = 'https://raw.githubusercontent.com/shinsengumi-archives/tumblr-search/master/data.json';
-	console.log(keyword);
-	$.getJSON(data_file, function(data) {
-		console.log(data);
-		var container = document.getElementById("content");
-		console.log(container)
 
+	keyword = keyword.toLowerCase();
+	var tags_must_contain = tags.filter(function(tag){
+		return tag.charAt(0) == '+';
+	}).map(function(tag){
+		return tag.substring(1);
+	});
+	var tags_not_contain = tags.filter(function(tag){
+		return tag.charAt(0) == '-';
+	}).map(function(tag){
+		return tag.substring(1);
+	});
+	tags = tags.filter(function(tag){
+		return tag.charAt(0) != '+' && tag.charAt(0) != '-';
+	})
+	
+	$.getJSON(data_file, function(data) {
+		var container = document.getElementById("content");
+
+		var matched = {};
 		for (var id in data.posts) {
 			post_data = data.posts[id];
-			if (post_data.text.indexOf(keyword) >= 0) {
-				var post = document.createElement('div');
-				post.innerHTML= post_data.html;
-				container.appendChild(post);
+			post_text = post_data.text.toLowerCase();
+			if (!matchTags(tags, tags_must_contain, tags_not_contain, post_data.tags)) {
+				continue;
+			}
+			var regex = new RegExp(keyword, "g");
+			var count = (post_text.match(regex) || []).length;
+			if (count > 0) {
+				if (!(count in matched)) {
+					matched[count] = [];
+				}
+				matched[count].push(post_data.html);
 			}
 		}
 		
+		var orderedKeys = Object.keys(matched).map(function(i){
+			return parseInt(i, 10);
+		}).sort((a,b) => b - a);
 		
-		console.log("qwe");
-		console.log(container)
+		orderedKeys.forEach(function(key) {
+			matched[key.toString()].forEach(function(post_html) {
+				var post = document.createElement('div');
+				post.innerHTML = post_html;
+				container.appendChild(post);
+			});
+		});
+		
+		
 	});
 }
 
+function matchTags(tags, must_contain, not_contain, post_tags) {
+	for (i = 0; i < must_contain.length; i++) {
+		if (!post_tags.includes(must_contain[i])) {
+			return false;
+		}
+	}
+	
+	for (i = 0; i < not_contain.length; i++) {
+		if (post_tags.includes(not_contain[i])) {
+			return false;
+		}
+	}
+	
+	for (i = 0; i < tags.length; i++) {
+		if (post_tags.includes(tags[i])) {
+			return true;
+		}
+	}
 
-
-//window.location.replace("http://www.w3schools.com");
-
+	return tags.length == 0;
+}
