@@ -20,7 +20,7 @@ for page_id in range(NPAGES, 12, -1):
 	doc = html.fromstring(page.content)
 
 	post_urls = [url.get('href') for url in doc.cssselect('h3.post-title a')]
-	post_htmls = [html.tostring(raw).decode('utf-8') for raw in doc.cssselect('div.post-text')]
+	post_htmls = [html.tostring(raw).decode('utf-8') for raw in doc.cssselect('div.post')]
 
 	for post_url, post_html in zip(post_urls, post_htmls):
 
