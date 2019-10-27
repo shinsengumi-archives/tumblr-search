@@ -1,5 +1,6 @@
 
 console.log(decodeURIComponent(escape("(\xe6\xb2\x96\xe7\x94\xb0\xe7\xb7\x8f\xe5\x8f\xb8) [wiki-corpus]")));
+console.log(escape("沖"));
 
 window.onload = function () {
     var iSearch = document.URL.indexOf("/search/");

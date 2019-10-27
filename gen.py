@@ -21,7 +21,7 @@ for page_id in range(NPAGES, 0, -1):
 	doc = html.fromstring(page.content.decode('utf8'))
 
 	post_urls = [url.get('href') for url in doc.cssselect('h3.post-title a')]
-	post_htmls = [str(html.tostring(raw)) for raw in doc.cssselect('div.post')]
+	post_htmls = [html.tostring(raw).decode('utf8') for raw in doc.cssselect('div.post')]
 
 	for post_url, post_html in zip(post_urls, post_htmls):
 		
@@ -32,9 +32,9 @@ for page_id in range(NPAGES, 0, -1):
 		post = requests.get(post_url)
 		doc = html.fromstring(post.content.decode('utf8'))
 
-		title = str(doc.cssselect('h3.post-title')[0].text_content())
+		title = doc.cssselect('h3.post-title')[0].text_content()
 
-		text = str(html.tostring(doc.cssselect('div.post-text')[0]))
+		text = html.tostring(doc.cssselect('div.post-text')[0]).decode('utf8')
 		text = re.sub('<.*?>', ' ', text)
 		text = text.strip().replace('\r', ' ').replace('\n', ' ').replace('\t', ' ').replace(' ', ' ')
 		text = re.sub('[ ]{2,}', ' ', text)
